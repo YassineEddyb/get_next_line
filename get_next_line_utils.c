@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yed-dyb <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/09 20:07:05 by yed-dyb           #+#    #+#             */
-/*   Updated: 2021/11/14 17:21:05 by yed-dyb          ###   ########.fr       */
+/*   Created: 2021/11/15 16:15:51 by yed-dyb           #+#    #+#             */
+/*   Updated: 2021/11/15 18:03:20 by yed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	ft_strlen(const char *s)
 {
 	int	i;
 
+    if (!s)
+        return (0);
 	i = 0;
 	while (s[i])
 		i++;
@@ -62,6 +64,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	i--;
 	while (i++ < (s1_len + s2_len))
 		str[i] = s2[j++];
-	str[i] = '\0';
+	str[i - 1] = '\0';
+	free((void *)s1);
 	return (str);
 }

@@ -5,44 +5,35 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yed-dyb <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/09 09:39:38 by yed-dyb           #+#    #+#             */
-/*   Updated: 2021/11/14 17:49:08 by yed-dyb          ###   ########.fr       */
+/*   Created: 2021/11/15 14:59:19 by yed-dyb           #+#    #+#             */
+/*   Updated: 2021/11/15 16:26:26 by yed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include<stdio.h>
 #include<fcntl.h>
+#include<stdio.h>
 
-int has_new_line(char *buf)
+int has_new_line(char *str)
 {
-    int i = 0;
-    while(buf[i])
+    int i;
+
+    if (!str)
+        return (0);
+    i = 0;
+    while (str[i])
     {
-        if (buf[i] == '\n' || buf[i] == '\0')
-            return 1;
+        if (str[i] == '\n')
+            return (1);
         i++;
     }
     return (0);
 }
 
-char *get_remain(char *str)
+char *get_line(char *str)
 {
-    char *remain;
-    int i;
     int len;
-
-    i = 0;
-    while(str[len] && str[len] != '\n')
-       i++;
-    len = ft_strlen(str) - i;
-    remain = malloc(len * sizeof(char));
-    ft_strlcpy(remain, str + i, len);
-    return (remain);
-}
-
-char *get_line(char *str, char *line) {
-    int len;
+    char *line;
 
     len = 0;
     while(str[len] && str[len] != '\n')
@@ -52,32 +43,46 @@ char *get_line(char *str, char *line) {
     return (line);
 }
 
-char *get_next_line(int fd)
+char *get_remain(char *str)
 {
-    char *buff;
-    char *str;
+    int i;
+    int len;
+    char *remain;
+    
+    i = 0;
+    while(str[i] && str[i] != '\n')
+        i++;
+    len = ft_strlen(str) - i;
+    remain = malloc((len + 1) * sizeof(char));
+    ft_strlcpy(remain, str + i + 1, len + 1);
+    free(str);
+    return (remain);
+}
+
+char *get_next_line(int fd) {
+    char buff[BUFFER_SIZE + 1];
+    static char *save;
     char *line;
     int size;
 
-    buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-    while(!has_new_line(str) )
+    while(!has_new_line(save) && ((size = read(fd, buff, BUFFER_SIZE)) != -1))
     {
-        size = read(fd, buff, BUFFER_SIZE);
-        buff[size] = '\0';
-        str = ft_strjoin(str, buff);
+        if (size == 0)
+            return (NULL);
+        buff[size] = 0;
+        save = ft_strjoin(save, buff);
     }
-    line = get_line(str, line);
-    str = get_remain(str);
-    return(line);
+    line = get_line(save);
+    save = get_remain(save);
+    return (line);
 }
 
-int main()
+/*int main()
 {
-    int fd = open("test.txt", 2);
+    int fd = open("./test.txt", 0);
     int i = 0;
-    //get_next_line(fd);
     while(i < 6) {
         printf("%s", get_next_line(fd));
-      i++;
+        i++;
     }
-}
+}*/
