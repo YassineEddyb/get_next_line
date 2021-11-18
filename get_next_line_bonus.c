@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yed-dyb <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/15 14:59:19 by yed-dyb           #+#    #+#             */
-/*   Updated: 2021/11/18 14:39:59 by yed-dyb          ###   ########.fr       */
+/*   Created: 2021/11/18 15:24:09 by yed-dyb           #+#    #+#             */
+/*   Updated: 2021/11/18 16:07:41 by yed-dyb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_line(char *str)
 {
@@ -84,25 +84,29 @@ char	*read_and_save(int fd, char *save)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*save;
+	static char	*arr[1024];
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	save = read_and_save(fd, save);
-	if (!save)
+	arr[fd] = read_and_save(fd, arr[fd]);
+	if (!arr[fd])
 		return (NULL);
-	line = get_line(save);
-	save = get_remain(save);
+	line = get_line(arr[fd]);
+	arr[fd] = get_remain(arr[fd]);
 	return (line);
 }
 
-/*int main()
-{
-    int fd = open("./test", 2);
-    int i = 0;
-    while(i < 3)
-    {
-        printf("%s", get_next_line(fd));
-        i++;
-    }
-}*/
+// int main()
+// {
+//     int fd1 = open("./test", 2);
+//     int fd2 = open("./test.txt", 2);
+//     int i = 0;
+//     // while(i < 3)
+//     // {
+//     printf("%s\n", get_next_line(fd1));
+//     printf("%s\n", get_next_line(fd2));
+//     printf("%s\n", get_next_line(fd1));
+//     printf("%s\n", get_next_line(fd2));
+//         // i++;
+//     // }
+// }
